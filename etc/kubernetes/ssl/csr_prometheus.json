@@ -1,0 +1,21 @@
+{
+  "CN": "prometheus.lan.mccorkell.me.uk",
+  "hosts": [
+    "192.168.11.9",
+    "prometheus.lan.mccorkell.me.uk",
+    "prometheus.local",
+    "prometheus"
+  ],
+  "key": {
+    "algo": "ecdsa",
+    "size": 256
+  },
+    "names": [
+       {
+         "C": "GB",
+         "L": "Dover",
+         "O": "McCorkell",
+         "OU": "LAN Infrastructure"
+       }
+    ]
+}

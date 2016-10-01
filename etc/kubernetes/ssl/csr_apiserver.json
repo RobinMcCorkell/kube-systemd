@@ -1,0 +1,26 @@
+{
+  "CN": "kubernetes.lan.mccorkell.me.uk",
+  "hosts": [
+    "192.168.11.9",
+    "prometheus",
+    "prometheus.lan.mccorkell.me.uk",
+    "kubernetes.lan.mccorkell.me.uk",
+    "10.0.0.1",
+    "kubernetes",
+    "kubernetes.default",
+    "kubernetes.default.svc",
+    "kubernetes.default.svc.cluster.local"
+  ],
+  "key": {
+    "algo": "ecdsa",
+    "size": 256
+  },
+    "names": [
+       {
+         "C": "GB",
+         "L": "Dover",
+         "O": "McCorkell",
+         "OU": "LAN Infrastructure"
+       }
+    ]
+}

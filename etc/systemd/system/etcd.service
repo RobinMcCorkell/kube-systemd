@@ -1,0 +1,26 @@
+[Unit]
+Description=etcd key-value store
+Documentation=https://github.com/coreos/etcd
+After=network.target docker-bootstrap.service
+Requires=docker-bootstrap.service
+
+[Service]
+Type=notify
+Environment=DOCKER_HOST=unix:///var/run/docker-bootstrap.sock
+EnvironmentFile=/etc/conf.d/etcd
+ExecStart=/usr/bin/systemd-docker --notify --env run --rm --name %n \
+	--net host \
+	-v /run/systemd/system \
+	-v /var/lib/kubelet/etcd:/var/etcd \
+	-v /root/ssl/etcd:/ssl:ro \
+	gcr.io/google_containers/etcd-arm:2.2.5 \
+	/usr/local/bin/etcd \
+		--data-dir=/var/etcd/data
+Restart=always
+RestartSec=10s
+NotifyAccess=all
+TimeoutStartSec=120
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

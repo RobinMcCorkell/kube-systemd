@@ -1,0 +1,26 @@
+[Unit]
+Description=flannel overlay networking
+Documentation=https://github.com/coreos/flannel
+After=network.target docker-bootstrap.service etcd.service
+Requires=docker-bootstrap.service etcd.service
+
+[Service]
+Type=notify
+Environment=DOCKER_HOST=unix:///var/run/docker-bootstrap.sock
+EnvironmentFile=/etc/conf.d/flannel
+ExecStart=/usr/bin/systemd-docker --notify --env run --rm --name %n \
+	--net=host \
+	--privileged \
+	-v /run/systemd/system \
+	-v /dev/net:/dev/net \
+	-v ${FLANNEL_SUBNET_DIR}:${FLANNEL_SUBNET_DIR} \
+	quay.io/coreos/flannel:v0.6.1-arm \
+	/opt/bin/flanneld
+Restart=always
+RestartSec=10s
+NotifyAccess=all
+TimeoutStartSec=120
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+{
+  "CN": "k8s kubelet CA",
+  "key": {
+    "algo": "ecdsa",
+    "size": 256
+  },
+    "names": [
+       {
+         "C": "GB",
+         "L": "Dover",
+         "O": "McCorkell",
+         "OU": "LAN Infrastructure"
+       }
+    ]
+}

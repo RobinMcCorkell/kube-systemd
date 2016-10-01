@@ -1,0 +1,26 @@
+[Unit]
+Description=Docker Application Container Engine (flannel Bootstrap)
+Documentation=https://docs.docker.com
+After=network.target docker-bootstrap.socket
+Requires=docker-bootstrap.socket
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/dockerd -H fd:// \
+	-p /var/run/docker-bootstrap.pid \
+	--iptables=false \
+	--ip-masq=false \
+	--bridge=none \
+	--graph=/var/lib/docker-bootstrap \
+	--exec-root=/var/run/docker-bootstrap
+ExecReload=/bin/kill -s HUP $MAINPID
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+TimeoutStartSec=0
+Delegate=yes
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

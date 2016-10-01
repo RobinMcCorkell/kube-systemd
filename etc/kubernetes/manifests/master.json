@@ -1,0 +1,101 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "k8s-master",
+    "namespace": "kube-system"
+  },
+  "spec":{
+    "hostNetwork": true,
+    "containers":[
+      {
+        "name": "controller-manager",
+        "image": "gcr.io/google_containers/hyperkube-arm:v1.3.7",
+        "command": [
+          "/hyperkube",
+          "controller-manager",
+	  "--kubeconfig=/etc/kubernetes/kubeconfig.yaml",
+	  "--service-account-private-key-file=/etc/kubernetes/serviceaccount/cert-key.pem",
+          "--min-resync-period=3m",
+          "--leader-elect=true",
+          "--cluster-cidr=10.1.0.0/16",
+          "--v=2"
+        ],
+        "volumeMounts": [
+          {
+            "name": "data",
+            "mountPath": "/srv/kubernetes"
+          },
+	  {
+            "name": "config",
+	    "mountPath": "/etc/kubernetes",
+	    "readOnly": true
+	  }
+        ]
+      },
+      {
+        "name": "apiserver",
+        "image": "gcr.io/google_containers/hyperkube-arm:v1.3.7",
+        "command": [
+          "/hyperkube",
+          "apiserver",
+          "--service-cluster-ip-range=10.0.0.1/24",
+          "--etcd-servers=http://localhost:2378",
+          "--admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota",
+          "--client-ca-file=/etc/kubernetes/ssl/ca.pem",
+          "--min-request-timeout=300",
+          "--tls-cert-file=/etc/kubernetes/ssl/apiserver.pem",
+          "--tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem",
+	  "--service-account-key-file=/etc/kubernetes/serviceaccount/cert-key.pem",
+	  "--kubelet-certificate-authority=/etc/kubernetes/sslkubelet/ca.pem",
+	  "--kubelet-client-certificate=/etc/kubernetes/sslkubelet/apiserver.pem",
+	  "--kubelet-client-key=/etc/kubernetes/sslkubelet/apiserver-key.pem",
+	  "--kubelet-https=true",
+          "--allow-privileged=true",
+          "--v=2"
+        ],
+        "volumeMounts": [
+          {
+            "name": "data",
+            "mountPath": "/srv/kubernetes"
+          },
+	  {
+            "name": "config",
+	    "mountPath": "/etc/kubernetes",
+	    "readOnly": true
+	  }
+        ]
+      },
+      {
+        "name": "scheduler",
+        "image": "gcr.io/google_containers/hyperkube-arm:v1.3.7",
+        "command": [
+          "/hyperkube",
+          "scheduler",
+	  "--kubeconfig=/etc/kubernetes/kubeconfig.yaml",
+          "--leader-elect=true",
+          "--v=2"
+        ],
+	"volumeMounts": [
+	  {
+            "name": "config",
+	    "mountPath": "/etc/kubernetes",
+	    "readOnly": true
+	  }
+	]
+      }
+    ],
+    "volumes": [
+      {
+        "name": "data",
+        "emptyDir": {}
+      },
+      {
+        "name": "config",
+	"hostPath": {
+          "path": "/etc/kubernetes"
+	}
+      }
+    ]
+  }
+}
